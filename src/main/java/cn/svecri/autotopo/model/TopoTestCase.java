@@ -1,18 +1,23 @@
 package cn.svecri.autotopo.model;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 public class TopoTestCase {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int caseId;
 
     private int topoId;
 
+    @Column(columnDefinition="VARCHAR(64)")
     private String cmd;
 
+    @Column(columnDefinition="TEXT")
     private String expectedRe;
 
+    @Column(columnDefinition="TEXT")
     private String targetTelnet;
 
     public int getCaseId() {

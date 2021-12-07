@@ -1,19 +1,18 @@
 package cn.svecri.autotopo.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-class TopoInfo {
+public class TopoInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int topoId;
 
+    @Column(columnDefinition="VARCHAR(64)")
     private String name;
 
+    @Column(columnDefinition="TEXT")
     private String configSchema;
 
     public int getTopoId() {
