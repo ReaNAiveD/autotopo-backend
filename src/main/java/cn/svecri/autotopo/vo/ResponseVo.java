@@ -4,19 +4,20 @@ import java.io.Serializable;
 
 public class ResponseVo<T> implements Serializable {
 
+    public static final int UNKNOWN = -1;
     public static final int OK = 0;
-    public static final int SUBSCRIBE_FAILED = 1;
-    public static final int UNSUBSCRIBE_FAILED = 2;
+    public static final int NOT_FOUND = 1;
+    public static final int NON_DELETABLE = 2;
 
-    public ResponseVo(int errorID, String errorMsg) {
-        this.errorID = errorID;
-        this.errorMsg = errorMsg;
+    public ResponseVo(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
         this.data = null;
     }
 
-    public ResponseVo(int errorID, String errorMsg, T data) {
-        this.errorID = errorID;
-        this.errorMsg = errorMsg;
+    public ResponseVo(int code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
         this.data = data;
     }
 
@@ -32,9 +33,9 @@ public class ResponseVo<T> implements Serializable {
         return new ResponseVo<>(errorID, e.getMessage());
     }
 
-    public int errorID;
+    public int code;
 
-    public String errorMsg;
+    public String msg;
 
     public T data;
 }

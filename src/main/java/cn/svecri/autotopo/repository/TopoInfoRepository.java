@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TopoInfoRepository extends JpaRepository<TopoInfo, Integer> {
+
+    TopoInfo getFirstByTopoId(int topoId);
+
 }

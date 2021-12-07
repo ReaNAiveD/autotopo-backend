@@ -8,19 +8,31 @@ import javax.persistence.*;
 public class TopoConf {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int confId;
 
     @Column(columnDefinition="TEXT")
     private String content;
 
-    private int topoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topoId")
+    private TopoInfo topoInfo;
 
     private boolean isDefault;
 
-    private boolean isdDelete;
+    private boolean isDeleted;
 
     private LocalDateTime lastUpdate;
+
+    public TopoConf(String content, TopoInfo topoInfo) {
+        this.content = content;
+        this.topoInfo = topoInfo;
+        this.isDefault = false;
+        this.isDeleted = false;
+        this.lastUpdate = LocalDateTime.now();
+    }
+
+    public TopoConf() {}
 
     public int getConfId() {
         return confId;
@@ -38,12 +50,12 @@ public class TopoConf {
         this.content = content;
     }
 
-    public int getTopoId() {
-        return topoId;
+    public TopoInfo getTopoInfo() {
+        return topoInfo;
     }
 
-    public void setTopoId(int topoId) {
-        this.topoId = topoId;
+    public void setTopoInfo(TopoInfo topoInfo) {
+        this.topoInfo = topoInfo;
     }
 
     public boolean isDefault() {
@@ -54,12 +66,12 @@ public class TopoConf {
         this.isDefault = isDefault;
     }
 
-    public boolean isIsdDelete() {
-        return isdDelete;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setIsdDelete(boolean isdDelete) {
-        this.isdDelete = isdDelete;
+    public void setDelete(boolean delete) {
+        isDeleted = delete;
     }
 
     public LocalDateTime getLastUpdate() {

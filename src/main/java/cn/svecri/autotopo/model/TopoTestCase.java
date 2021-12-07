@@ -6,10 +6,12 @@ import javax.persistence.*;
 public class TopoTestCase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int caseId;
 
-    private int topoId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topoId")
+    private TopoInfo topoInfo;
 
     @Column(columnDefinition="VARCHAR(64)")
     private String cmd;
@@ -20,6 +22,9 @@ public class TopoTestCase {
     @Column(columnDefinition="TEXT")
     private String targetTelnet;
 
+    public TopoTestCase() {
+    }
+
     public int getCaseId() {
         return caseId;
     }
@@ -28,12 +33,12 @@ public class TopoTestCase {
         this.caseId = caseId;
     }
 
-    public int getTopoId() {
-        return topoId;
+    public TopoInfo getTopoInfo() {
+        return topoInfo;
     }
 
-    public void setTopoId(int topoId) {
-        this.topoId = topoId;
+    public void setTopoInfo(TopoInfo topoInfo) {
+        this.topoInfo = topoInfo;
     }
 
     public String getCmd() {
