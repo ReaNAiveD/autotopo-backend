@@ -3,6 +3,7 @@ package cn.svecri.autotopo.model;
 import javax.persistence.*;
 
 @Entity
+@Table(indexes = { @Index(columnList = "topoId")})
 public class TopoTestCase {
 
     @Id

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
+@Table(indexes = { @Index(columnList = "topoId, isDeleted, lastUpdate DESC"), @Index(columnList = "topoId, isDefault")})
 public class TopoConf {
     
     @Id
