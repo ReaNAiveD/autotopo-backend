@@ -1,25 +1,33 @@
 package cn.svecri.autotopo.controller;
 
-import cn.svecri.autotopo.vo.ResponseVo;
+import cn.svecri.autotopo.exception.NonDeletableException;
+import cn.svecri.autotopo.exception.NotFoundException;
+import cn.svecri.autotopo.service.TopoConfigService;
+import cn.svecri.autotopo.vo.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+
 @RestController
-@RequestMapping("/topology/config")
+@RequestMapping("/api/v1/topology/config")
 public class TopoConfigController {
 
+    @Resource
+    private TopoConfigService topoConfigService;
+
     @GetMapping("/default")
-    public ResponseVo<Object> getDefaultConfig(@RequestParam int topo) {
-        return ResponseVo.ok();
+    public ResponseVo<TopoConfigVo> getDefaultConfig(@RequestParam int topo) {
+        return ResponseVo.ok(topoConfigService.getDefaultTopoConfig(topo));
     }
 
     @GetMapping("/schema")
-    public ResponseVo<Object> getConfigSchema(@RequestParam int topo) {
-        return ResponseVo.ok();
+    public ResponseVo<TopoSchemaVo> getConfigSchema(@RequestParam int topo) {
+        return ResponseVo.ok(topoConfigService.getTopoSchema(topo));
     }
 
     @PostMapping("")
-    public ResponseVo<Object> saveConfig(@RequestParam int topo, @RequestBody String content) {
-        return ResponseVo.ok();
+    public ResponseVo<TopoConfigSaveResult> saveConfig(@RequestParam int topo, @RequestBody String content) {
+        return ResponseVo.ok(topoConfigService.saveTopoConfig(topo, content));
     }
 
     @PostMapping("/apply")
@@ -28,8 +36,8 @@ public class TopoConfigController {
     }
 
     @GetMapping("")
-    public ResponseVo<Object> getConfig(@RequestParam int configId) {
-        return ResponseVo.ok();
+    public ResponseVo<TopoConfigVo> getConfig(@RequestParam int configId) {
+        return ResponseVo.ok(topoConfigService.getConfig(configId));
     }
 
     @PostMapping("/check")
@@ -38,13 +46,24 @@ public class TopoConfigController {
     }
 
     @GetMapping("/all")
-    public ResponseVo<Object> getAllConfig() {
-        return ResponseVo.ok();
+    public ResponseVo<TopoConfigListVo> getAllConfig() {
+        return ResponseVo.ok(topoConfigService.getAllTopoConfig());
     }
 
     @DeleteMapping("")
     public ResponseVo<Object> deleteConfig(@RequestParam int configId) {
+        topoConfigService.deleteByConfigId(configId);
         return ResponseVo.ok();
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseVo<Object> handleNotFoundException(Exception e) {
+        return ResponseVo.error(ResponseVo.NOT_FOUND, e);
+    }
+
+    @ExceptionHandler({NonDeletableException.class})
+    public ResponseVo<Object> handleNonDeletableException(Exception e) {
+        return ResponseVo.error(ResponseVo.NON_DELETABLE, e);
     }
 
 }

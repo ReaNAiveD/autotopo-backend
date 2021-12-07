@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class TopoInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int topoId;
 
     @Column(columnDefinition="VARCHAR(64)")
@@ -14,6 +14,9 @@ public class TopoInfo {
 
     @Column(columnDefinition="TEXT")
     private String configSchema;
+
+    public TopoInfo() {
+    }
 
     public int getTopoId() {
         return topoId;
