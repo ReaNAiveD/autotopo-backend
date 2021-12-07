@@ -1,15 +1,12 @@
 package cn.svecri.autotopo.util.jsonparser;
 
+import cn.svecri.autotopo.util.ConfigurationApplyer;
 import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConf;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
-import cn.svecri.autotopo.util.jsonparser.vo.PortDetail;
 import com.google.gson.Gson;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
