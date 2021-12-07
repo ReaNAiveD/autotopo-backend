@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeviceController {
 
     @PostMapping("/exec")
-    public ResponseVo execCmd(@RequestBody Command cmd) {
+    public ResponseVo<Object> execCmd(@RequestBody Command cmd) {
         return ResponseVo.ok();
     }
 
