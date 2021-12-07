@@ -4,8 +4,8 @@ import cn.svecri.autotopo.vo.ResponseVo;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/topology")
-public class TopoController {
+@RequestMapping("/topology/config")
+public class TopoConfigController {
 
     @GetMapping("/default")
     public ResponseVo getDefaultConfig(@RequestParam int topo) {
