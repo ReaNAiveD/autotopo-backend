@@ -1,4 +1,4 @@
-package cn.svecri.autotopo.util.jsonparser;
+package cn.svecri.autotopo.util;
 
 import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
