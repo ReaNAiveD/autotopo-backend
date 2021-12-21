@@ -40,9 +40,13 @@ public class ConfigurationApplyer {
             for(PortDetail portDetail: deviceConfItem.getPort()){
                 if(!"f0/0".equals(portDetail.getName())) {
                     commandList.add("int "+portDetail.getName());
-                    //TODO: convert mask; add ospf configuration
-                    commandList.add("ip address "+portDetail.getIp()+" 255.255.255.0");
-                    commandList.add("no shut");
+                    if(portDetail.isUp()) {
+                        commandList.add("ip address " + portDetail.getIp() + " "
+                                +NetmaskConverter.masknum2str(portDetail.getMask()));
+                        commandList.add("no shut");
+                    }else{
+                        commandList.add("shutdown");
+                    }
                     commandList.add("exit");
 
                 }

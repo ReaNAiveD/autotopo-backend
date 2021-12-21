@@ -1,6 +1,7 @@
 package cn.svecri.autotopo.util.jsonparser;
 
 import cn.svecri.autotopo.util.ConfigurationApplyer;
+import cn.svecri.autotopo.util.NetmaskConverter;
 import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConf;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
@@ -59,9 +60,5 @@ public class JsonParser {
             String confReply = configurationApplyer.sendBatchCommand(client, commandList);
             System.out.println(confReply);
         }
-
-
-
     }
-
 }
