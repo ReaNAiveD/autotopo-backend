@@ -33,7 +33,7 @@ public class StaticDeployServiceImpl implements TopoDeployService {
 
     @Override
     public List<CommandWithResult> exec(String configuration) {
-        return null;
+        return exec(resolveConfiguration(configuration));
     }
 
     @Override
