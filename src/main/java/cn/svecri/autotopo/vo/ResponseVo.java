@@ -8,6 +8,8 @@ public class ResponseVo<T> implements Serializable {
     public static final int OK = 0;
     public static final int NOT_FOUND = 1;
     public static final int NON_DELETABLE = 2;
+    public static final int NO_TOPO_DEPLOYED = 3;
+    public static final int TOPO_RUNNING = 4;
 
     public ResponseVo(int code, String msg) {
         this.code = code;

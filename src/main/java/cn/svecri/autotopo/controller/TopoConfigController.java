@@ -1,7 +1,9 @@
 package cn.svecri.autotopo.controller;
 
+import cn.svecri.autotopo.exception.NoTopoDeployedException;
 import cn.svecri.autotopo.exception.NonDeletableException;
 import cn.svecri.autotopo.exception.NotFoundException;
+import cn.svecri.autotopo.exception.TopoRunningException;
 import cn.svecri.autotopo.service.TopoConfigService;
 import cn.svecri.autotopo.vo.*;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +33,8 @@ public class TopoConfigController {
     }
 
     @PostMapping("/apply")
-    public ResponseVo<Object> applyConfig(@RequestParam int configId) {
-        return ResponseVo.ok();
+    public ResponseVo<TopoConfigApplyResult> applyConfig(@RequestParam int configId) {
+        return ResponseVo.ok(topoConfigService.deployConfig(configId));
     }
 
     @GetMapping("")
@@ -41,8 +43,8 @@ public class TopoConfigController {
     }
 
     @PostMapping("/check")
-    public ResponseVo<Object> checkConfig(@RequestParam int topo) {
-        return ResponseVo.ok();
+    public ResponseVo<TestCaseResult> checkConfig(@RequestParam int topo) {
+        return ResponseVo.ok(topoConfigService.testConfig(topo));
     }
 
     @GetMapping("/all")
@@ -64,6 +66,16 @@ public class TopoConfigController {
     @ExceptionHandler({NonDeletableException.class})
     public ResponseVo<Object> handleNonDeletableException(Exception e) {
         return ResponseVo.error(ResponseVo.NON_DELETABLE, e);
+    }
+
+    @ExceptionHandler({NoTopoDeployedException.class})
+    public ResponseVo<Object> handleNoTopoDeployedException(Exception e) {
+        return ResponseVo.error(ResponseVo.NO_TOPO_DEPLOYED, e);
+    }
+
+    @ExceptionHandler({TopoRunningException.class})
+    public ResponseVo<Object> handleTopoRunningException(Exception e) {
+        return ResponseVo.error(ResponseVo.TOPO_RUNNING, e);
     }
 
 }

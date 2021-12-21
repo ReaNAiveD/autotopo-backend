@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "router-a.ip",
+      "type": "java.lang.String",
+      "description": "Description for router-a.ip."
+    },
+    {
+      "name": "router-b.ip",
+      "type": "java.lang.String",
+      "description": "Description for router-b."
+    },
+    {
+      "name": "router-c.ip",
+      "type": "java.lang.String",
+      "description": "Description for router-c.ip."
+    },
+    {
+      "name": "router-a.pwd",
+      "type": "java.lang.String",
+      "description": "Description for router-a.pwd."
+    },
+    {
+      "name": "router-b.pwd",
+      "type": "java.lang.String",
+      "description": "Description for router-b.pwd."
+    },
+    {
+      "name": "router-c.pwd",
+      "type": "java.lang.String",
+      "description": "Description for router-c.pwd."
+    }
+  ] }

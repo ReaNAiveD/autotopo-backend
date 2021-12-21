@@ -1,9 +1,8 @@
 package cn.svecri.autotopo.service;
 
-import cn.svecri.autotopo.vo.TopoConfigListVo;
-import cn.svecri.autotopo.vo.TopoConfigSaveResult;
-import cn.svecri.autotopo.vo.TopoConfigVo;
-import cn.svecri.autotopo.vo.TopoSchemaVo;
+import cn.svecri.autotopo.vo.*;
+
+import java.util.List;
 
 public interface TopoConfigService {
 
@@ -18,5 +17,9 @@ public interface TopoConfigService {
     TopoConfigListVo getAllTopoConfig();
 
     void deleteByConfigId(int configId);
+
+    TopoConfigApplyResult deployConfig(int configId);
+
+    TestCaseResult testConfig(int topoId);
 
 }

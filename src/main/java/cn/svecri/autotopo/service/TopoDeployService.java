@@ -9,11 +9,11 @@ public interface TopoDeployService {
 
     List<Command> resolveConfiguration(String configuration);
 
-    List<CommandWithResult> exec(List<Command> commands) throws Exception;
+    List<CommandWithResult> exec(List<Command> commands);
 
-    List<CommandWithResult> exec(String configuration) throws Exception;
+    List<CommandWithResult> exec(String configuration);
 
-    void clean() throws Exception;
+    void clean();
 
     boolean running();
 
