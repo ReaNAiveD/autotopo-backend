@@ -16,4 +16,9 @@ public class DeviceConf {
     private DeviceConfItem routerB;
     @SerializedName("RouterC")
     private DeviceConfItem routerC;
+    @SerializedName("SwitchA")
+    private DeviceConfItem switchA;
+
+    private LineInfo[] line;
+
 }

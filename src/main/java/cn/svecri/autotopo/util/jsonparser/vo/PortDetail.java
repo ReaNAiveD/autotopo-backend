@@ -11,6 +11,5 @@ public class PortDetail {
     private String name;
     private String ip;
     private Integer mask;
-    private String network;
-    private Integer priority;
+    private Boolean up;
 }

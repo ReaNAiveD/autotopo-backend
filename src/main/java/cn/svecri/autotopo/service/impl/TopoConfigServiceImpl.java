@@ -31,6 +31,7 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         this.topoInfoRepository = topoInfoRepository;
     }
 
+    @Override
     public TopoConfigVo getDefaultTopoConfig(int topoId) {
         TopoConf topoConf = topoConfRepository.getFirstByTopoInfo_TopoIdAndIsDefaultTrueAndIsDeletedFalse(topoId);
         if (topoConf == null) {
@@ -39,6 +40,7 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         return TopoConfigVo.fromTopoConf(topoConf);
     }
 
+    @Override
     public TopoSchemaVo getTopoSchema(int topoId) {
         TopoInfo topoInfo = topoInfoRepository.getFirstByTopoId(topoId);
         if (topoInfo == null) {
@@ -47,6 +49,7 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         return TopoSchemaVo.fromTopoConf(topoInfo);
     }
 
+    @Override
     public TopoConfigSaveResult saveTopoConfig(int topoId, String config) {
         TopoConf topoConf = new TopoConf(
                 config,
@@ -56,6 +59,7 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         return new TopoConfigSaveResult(topoConf.getConfId());
     }
 
+    @Override
     public TopoConfigVo getConfig(int configId) {
         TopoConf topoConf = topoConfRepository.getFirstByConfId(configId);
         if (topoConf == null) {
@@ -64,11 +68,13 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         return TopoConfigVo.fromTopoConf(topoConf);
     }
 
+    @Override
     public TopoConfigListVo getAllTopoConfig() {
         List<TopoConfigSummary> topoConfigSummaryList = topoConfRepository.getAllByIsDeletedFalseOrderByLastUpdateDesc();
         return new TopoConfigListVo(topoConfigSummaryList.stream().map(TopoConfigListItemVo::fromTopoConfigView).collect(Collectors.toList()));
     }
 
+    @Override
     public void deleteByConfigId(int configId) {
         TopoConf topoConf = topoConfRepository.getFirstByConfId(configId);
         if (topoConf == null) {

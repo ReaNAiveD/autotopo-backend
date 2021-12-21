@@ -18,7 +18,7 @@ public class JsonParser {
     static String[] confFilePathList=new String[]{
             "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\rip conf.json",
             "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\static conf.json",
-            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\ospf conf.json",
+            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\ospf conf switch.json"
     };
 
     public DeviceConf parseJsonFromFile(String path) {
@@ -49,7 +49,7 @@ public class JsonParser {
     public static void main(String[] args){
         JsonParser jsonParser=new JsonParser();
         ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
-        DeviceConf deviceConf= jsonParser.parseJsonFromFile(confFilePathList[0]);
+        DeviceConf deviceConf= jsonParser.parseJsonFromFile(confFilePathList[2]);
 
         DeviceConfItem[] confItems=new DeviceConfItem[3];
         confItems[0]=deviceConf.getRouterA();
