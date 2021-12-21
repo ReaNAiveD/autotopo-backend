@@ -1,6 +1,5 @@
 package cn.svecri.autotopo.util;
 
-import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
 import cn.svecri.autotopo.util.jsonparser.vo.PortDetail;
 
@@ -65,7 +64,6 @@ public class ConfigurationApplyer {
                 e.printStackTrace();
             }
         }
-        System.out.println(stringBuilder);
         return stringBuilder.toString();
     }
 }
