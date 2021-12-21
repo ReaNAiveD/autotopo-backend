@@ -16,9 +16,9 @@ import java.util.List;
 public class JsonParser {
     Gson gson=new Gson();
     static String[] confFilePathList=new String[]{
-            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\rip conf.json",
-            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\static conf.json",
-            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\ospf conf switch.json"
+            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\配置文件\\static conf 1221.json",
+            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\配置文件\\rip conf 1221.json",
+            "D:\\UNIVERSE\\研一一\\高级计算机网络\\MINE\\大作业\\配置文件\\ospf conf 1221.json",
     };
 
     public DeviceConf parseJsonFromFile(String path) {
@@ -51,10 +51,7 @@ public class JsonParser {
         ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
         DeviceConf deviceConf= jsonParser.parseJsonFromFile(confFilePathList[2]);
 
-        DeviceConfItem[] confItems=new DeviceConfItem[3];
-        confItems[0]=deviceConf.getRouterA();
-        confItems[1]=deviceConf.getRouterB();
-        confItems[2]=deviceConf.getRouterC();
+        DeviceConfItem[] confItems= deviceConf.getRouter();
 
         for(DeviceConfItem item:confItems) {
             TelnetClient client = configurationApplyer.connectTelnet(item);

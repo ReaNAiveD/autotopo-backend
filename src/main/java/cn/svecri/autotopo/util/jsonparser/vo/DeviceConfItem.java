@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class DeviceConfItem {
+    private String name;
     private PortDetail[] port;
     private String[] command;
 }
