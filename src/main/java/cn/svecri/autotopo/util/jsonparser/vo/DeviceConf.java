@@ -10,14 +10,11 @@ import lombok.Data;
 @Data
 public class DeviceConf {
     private String topotype;
-    @SerializedName("RouterA")
-    private DeviceConfItem routerA;
-    @SerializedName("RouterB")
-    private DeviceConfItem routerB;
-    @SerializedName("RouterC")
-    private DeviceConfItem routerC;
-    @SerializedName("SwitchA")
-    private DeviceConfItem switchA;
+
+    private DeviceConfItem[] router;
+
+    @SerializedName("switch")
+    private DeviceConfItem switchDevice;
 
     private LineInfo[] line;
 
