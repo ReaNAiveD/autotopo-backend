@@ -13,24 +13,26 @@ public class TelnetClient {
     private final org.apache.commons.net.telnet.TelnetClient telnet;
     private InputStream in;		// 输入流,接收返回信息
     private PrintStream out;	// 向服务器写入 命令
+    private String deviceName;
 
     /**
      * @param termtype	协议类型：VT100、VT52、VT220、VTNT、ANSI
      * @param prompt	结果结束标识
      */
+    public TelnetClient(String termtype, String prompt,String name){
+        telnet = new org.apache.commons.net.telnet.TelnetClient(termtype);
+        setPrompt(prompt);
+        deviceName=name;
+    }
+
     public TelnetClient(String termtype, String prompt){
         telnet = new org.apache.commons.net.telnet.TelnetClient(termtype);
         setPrompt(prompt);
     }
 
-    public TelnetClient(String termtype){
-        telnet = new org.apache.commons.net.telnet.TelnetClient(termtype);
-    }
-
     public TelnetClient(){
         telnet = new org.apache.commons.net.telnet.TelnetClient();
     }
-
     /**
      * 登录到目标主机
      */
@@ -68,7 +70,6 @@ public class TelnetClient {
             int code = -1;
             while ((code = in.read()) != -1) {
                 ch = (char)code;
-                //System.out.print(ch);
                 sb.append(ch);
                 //匹配到结束标识时返回结果
                 if (flag) {
@@ -149,5 +150,13 @@ public class TelnetClient {
             }
             System.out.println(rs);
         }
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 }

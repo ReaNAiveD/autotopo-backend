@@ -5,6 +5,7 @@ import cn.svecri.autotopo.util.NetmaskConverter;
 import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConf;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
+import cn.svecri.autotopo.vo.CommandWithResult;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -46,6 +47,9 @@ public class JsonParser {
         return gson.fromJson(json,DeviceConf.class);
     }
 
+    public DeviceConf parseJsonFromString(String json) {
+        return gson.fromJson(json,DeviceConf.class);
+    }
 
     public static void main(String[] args){
         JsonParser jsonParser=new JsonParser();
@@ -53,12 +57,13 @@ public class JsonParser {
         DeviceConf deviceConf= jsonParser.parseJsonFromFile(confFilePathList[2]);
 
         DeviceConfItem[] confItems= deviceConf.getRouter();
+        List<CommandWithResult> res=null;
 
         for(DeviceConfItem item:confItems) {
             TelnetClient client = configurationApplyer.connectTelnet(item);
             List<String> commandList = configurationApplyer.constructCommandList(item);
-            String confReply = configurationApplyer.sendBatchCommand(client, commandList);
-            System.out.println(confReply);
+            res = configurationApplyer.sendBatchCommand(client, commandList);
+            System.out.println(res);
         }
     }
 }

@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.Nullable;
 
 @Log4j2
 @SpringBootConfiguration
@@ -16,10 +17,10 @@ public class TelnetClientConfiguration {
             @Value("${router-a.pwd}") String password
     ) {
         log.info("Configuring RouteA");
-        var client = new TelnetClient("VT220","#");
-//        if (!client.login(ip, 23, password)) {
-//            log.error("Login to " + ip + ":" + 23 + " Error!");
-//        }
+        var client = new TelnetClient("VT220","#","routerA");
+       /* if (!client.login(ip, 23, password)) {
+            log.error("Login to " + ip + ":" + 23 + " Error!");
+        }*/
         return client;
     }
 
@@ -29,23 +30,23 @@ public class TelnetClientConfiguration {
             @Value("${router-b.pwd}") String password
     ) {
         log.info("Configuring RouteB");
-        var client = new TelnetClient("VT220","#");
-//        if (!client.login(ip, 23, password)) {
-//            log.error("Login to " + ip + ":" + 23 + " Error!");
-//        }
+        var client = new TelnetClient("VT220","#","routerB");
+        /*if (!client.login(ip, 23, password)) {
+            log.error("Login to " + ip + ":" + 23 + " Error!");
+        }*/
         return client;
     }
 
     @Bean
     public TelnetClient routerC(
-            @Value("${router-c.ip}") String ip,
-            @Value("${router-c.pwd}") String password
+            @Value("${router-c.ip}") @Nullable String ip,
+            @Value("${router-c.pwd}") @Nullable String password
     ) {
         log.info("Configuring RouteC");
-        var client = new TelnetClient("VT220","#");
-//        if (!client.login(ip, 23, password)) {
-//            log.error("Login to " + ip + ":" + 23 + " Error!");
-//        }
+        var client = new TelnetClient("VT220","#","routerC");
+       /* if (!client.login(ip, 23, password)) {
+            log.error("Login to " + ip + ":" + 23 + " Error!");
+        }*/
         return client;
     }
 
