@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @Qualifier("ospfDeployService")
-public class OspfDeployServiceImpl extends TopoDeployServiceBaseImpl implements TopoDeployService {
+public class OspfDeployServiceImpl extends TopoDeployServiceBaseImpl{
     @Override
     public void clean() {
         log.info("in ospf clean");

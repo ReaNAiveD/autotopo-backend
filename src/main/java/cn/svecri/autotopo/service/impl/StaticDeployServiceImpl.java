@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @Qualifier("staticDeployService")
-public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl implements TopoDeployService {
+public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
     @Override
     public void clean() {
         log.info("in static clean");

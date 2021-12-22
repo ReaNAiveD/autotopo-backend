@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @Qualifier("ripDeployService")
-public class RipDeployServiceImpl extends TopoDeployServiceBaseImpl implements TopoDeployService {
+public class RipDeployServiceImpl extends TopoDeployServiceBaseImpl{
     @Override
     public void clean() {
         log.info("in rip clean");

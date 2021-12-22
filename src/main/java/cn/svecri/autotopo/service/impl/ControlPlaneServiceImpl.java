@@ -51,9 +51,7 @@ public class ControlPlaneServiceImpl implements ControlPlaneService {
             current.clean();
         }
         current = getByTopoId(topoId);
-        //return current.exec(conf);
-        current.clean();
-        return null;
+        return current.exec(conf);
     }
 
     @Override
