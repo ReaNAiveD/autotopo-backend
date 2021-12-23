@@ -10,6 +10,7 @@ import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
 import cn.svecri.autotopo.vo.TelnetCommand;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
+@Service
+@Primary
 public class TopoDeployServiceBaseImpl implements TopoDeployService {
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
     private final List<TelnetClient> clientList=new ArrayList<>();

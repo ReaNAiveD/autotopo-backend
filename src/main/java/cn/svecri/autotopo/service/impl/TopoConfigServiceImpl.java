@@ -127,5 +127,9 @@ public class TopoConfigServiceImpl implements TopoConfigService {
         return new TestCaseResult(((double) success) / total, resultItems);
     }
 
+//    private String concatPattern(String originCmd){
+//
+//    }
+
 
 }
