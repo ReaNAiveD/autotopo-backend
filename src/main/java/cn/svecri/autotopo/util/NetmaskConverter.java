@@ -10,7 +10,9 @@ import java.util.Arrays;
  */
 @Slf4j
 public final class NetmaskConverter {
-    //从数字格式的子网掩码获得255.255.255.0形式的子网掩码
+    /**
+     * 从数字格式的子网掩码获得255.255.255.0形式的子网掩码
+     */
     public static String masknum2str(int maskNum){
         int addr=0xffffffff<<32-maskNum;
         String res= (addr >> 24 & 0xff) + "." + (addr >> 16 & 0xff) + "." + (addr >> 8 & 0xff) + "." + (addr & 0xff);
@@ -18,7 +20,9 @@ public final class NetmaskConverter {
         return res;
     }
 
-    //根据数字格式的子网掩码和ip地址获得其网段
+    /**
+     * 根据数字格式的子网掩码和ip地址获得其网段
+     */
     public static String getNetSegment(String ip,int maskNum){
         int[] num= Arrays.stream(ip.split("\\.")).mapToInt(Integer::parseInt).toArray();
         int addr=0xffffffff<<32-maskNum;
