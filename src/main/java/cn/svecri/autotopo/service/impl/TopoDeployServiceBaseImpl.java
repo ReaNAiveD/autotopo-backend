@@ -1,5 +1,6 @@
 package cn.svecri.autotopo.service.impl;
 
+import cn.svecri.autotopo.model.TopoTestCase;
 import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.util.ConfigurationApplyer;
 import cn.svecri.autotopo.util.TelnetClient;
@@ -9,6 +10,7 @@ import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
 import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
 import cn.svecri.autotopo.vo.TelnetCommand;
+import cn.svecri.autotopo.vo.TestCaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,12 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
     private final List<TelnetClient> clientList=new ArrayList<>();
     private final AtomicBoolean isDeploying=new AtomicBoolean(false);
+    DeviceConf deviceConf;
 
     @Override
     public List<TelnetCommand> resolveConfiguration(String configuration) {
         JsonParser jsonParser=new JsonParser();
-        DeviceConf deviceConf= jsonParser.parseJsonFromString(configuration);
+        deviceConf= jsonParser.parseJsonFromString(configuration);
 
         DeviceConfItem[] confItems= deviceConf.getRouter();
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
@@ -62,10 +65,10 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
 
 
     private List<CommandWithResult> execute(List<TelnetCommand> telnetCommandList) {
-        List<CommandWithResult> res=null;
+        List<CommandWithResult> res=new ArrayList<>();
         isDeploying.set(true);
         for(TelnetCommand com:telnetCommandList) {
-            res = configurationApplyer.sendBatchCommand(com.getClient(), com.getCmd());
+            res.addAll(configurationApplyer.sendBatchCommand(com.getClient(), com.getCmd()));
         }
         isDeploying.set(false);
         return res;
@@ -82,5 +85,10 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     @Override
     public boolean running() {
         return isDeploying.get();
+    }
+
+    @Override
+    public TestCaseResult runTestCase(List<TopoTestCase> testCaseList){
+        return null;
     }
 }

@@ -1,8 +1,10 @@
 package cn.svecri.autotopo.service;
 
+import cn.svecri.autotopo.model.TopoTestCase;
 import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
 import cn.svecri.autotopo.vo.TelnetCommand;
+import cn.svecri.autotopo.vo.TestCaseResult;
 
 import java.util.List;
 
@@ -16,5 +18,7 @@ public interface TopoDeployService {
     void clean();
 
     boolean running();
+
+    TestCaseResult runTestCase(List<TopoTestCase> testCaseList);
 
 }

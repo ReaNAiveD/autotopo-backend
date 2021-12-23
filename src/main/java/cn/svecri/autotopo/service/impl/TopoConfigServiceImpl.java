@@ -10,9 +10,11 @@ import cn.svecri.autotopo.repository.TopoInfoRepository;
 import cn.svecri.autotopo.repository.TopoTestCaseRepository;
 import cn.svecri.autotopo.service.ControlPlaneService;
 import cn.svecri.autotopo.service.TopoConfigService;
+import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.vo.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,6 +50,16 @@ public class TopoConfigServiceImpl implements TopoConfigService {
     public void setTopoTestCaseRepository(TopoTestCaseRepository topoTestCaseRepository) {
         this.topoTestCaseRepository = topoTestCaseRepository;
     }
+
+    @Autowired
+    @Qualifier("ospfDeployService")
+    private TopoDeployService ospfDeployService;
+    @Autowired
+    @Qualifier("ripDeployService")
+    private TopoDeployService ripDeployService;
+    @Autowired
+    @Qualifier("staticDeployService")
+    private TopoDeployService staticDeployService;
 
     @Override
     public TopoConfigVo getDefaultTopoConfig(int topoId) {
@@ -113,7 +125,7 @@ public class TopoConfigServiceImpl implements TopoConfigService {
 
     @Override
     public TestCaseResult testConfig(int topoId) {
-        List<TestCaseResultItem> resultItems = new ArrayList<>();
+        /*List<TestCaseResultItem> resultItems = new ArrayList<>();
         int success = 0;
         int total = 0;
         for (var testCase:
@@ -124,12 +136,20 @@ public class TopoConfigServiceImpl implements TopoConfigService {
             if (pass) success++;
             total++;
         }
-        return new TestCaseResult(((double) success) / total, resultItems);
+        return new TestCaseResult(((double) success) / total, resultItems);*/
+        TestCaseResult result=null;
+        switch (topoId){
+            case 0:
+                result=staticDeployService.runTestCase(topoTestCaseRepository.getAllByTopoInfo(topoInfoRepository.getById(topoId)));
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            default:
+
+        }
+        return result;
     }
-
-//    private String concatPattern(String originCmd){
-//
-//    }
-
 
 }
