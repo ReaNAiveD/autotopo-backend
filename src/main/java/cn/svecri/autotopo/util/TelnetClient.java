@@ -7,12 +7,15 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 public class TelnetClient {
-
-    private String prompt = "#";	//结束标识字符串,Windows中是>,Linux中是#
-    private char promptChar = '>';	//结束标识字符
+    //结束标识字符串,Windows中是>,Linux中是#
+    private String prompt = "#";
+    //结束标识字符
+    private char promptChar = '>';
     private final org.apache.commons.net.telnet.TelnetClient telnet;
-    private InputStream in;		// 输入流,接收返回信息
-    private PrintStream out;	// 向服务器写入 命令
+    // 输入流,接收返回信息
+    private InputStream in;
+    // 向服务器写入 命令
+    private PrintStream out;
     private String deviceName;
 
     /**
@@ -114,8 +117,6 @@ public class TelnetClient {
             e.printStackTrace();
         }
         return null;
-//        System.out.println(command);
-//        return command;
     }
 
     /**

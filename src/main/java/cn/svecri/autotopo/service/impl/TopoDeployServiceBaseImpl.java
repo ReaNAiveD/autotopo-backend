@@ -7,10 +7,8 @@ import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.JsonParser;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConf;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
-import cn.svecri.autotopo.vo.Command;
-import cn.svecri.autotopo.vo.CommandWithResult;
-import cn.svecri.autotopo.vo.TelnetCommand;
-import cn.svecri.autotopo.vo.TestCaseResult;
+import cn.svecri.autotopo.util.jsonparser.vo.PortDetail;
+import cn.svecri.autotopo.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -26,9 +24,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Primary
 public class TopoDeployServiceBaseImpl implements TopoDeployService {
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
-    private final List<TelnetClient> clientList=new ArrayList<>();
-    private final AtomicBoolean isDeploying=new AtomicBoolean(false);
+    final List<TelnetClient> clientList=new ArrayList<>();
+    final AtomicBoolean isDeploying=new AtomicBoolean(false);
     DeviceConf deviceConf;
+
+    //分别是 A s0/0/0 B s0/0/0 s0/0/1 C s0/0/0 先写死了后面要改再说吧
+    String[] sIpAddr=new String[4];
+    int[] sMask=new int[4];
+    String[] sName=new String[4];
 
     @Override
     public List<TelnetCommand> resolveConfiguration(String configuration) {
@@ -87,8 +90,63 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         return isDeploying.get();
     }
 
+    /**
+     * 静态路由和rip这一段可以复用，如果ospf不行就直接override吧
+     */
     @Override
     public TestCaseResult runTestCase(List<TopoTestCase> testCaseList){
-        return null;
+        getPortDetail();
+
+        List<TestCaseResultItem> resultItems = new ArrayList<>();
+        int success = 0;
+        int total = 0;
+        boolean pass;
+        List<CommandWithResult> result;
+        String cmdStr="";
+        String rexpStr="";
+
+        for(TopoTestCase testCase:testCaseList) {
+            //打开的s口应该可以互相ping通 下面添加的是ping命令
+            if(testCase.getCmd().startsWith("ping ")) {
+                for(String ip:sIpAddr) {
+                    cmdStr=testCase.getCmd().replace("#1",ip);
+                    rexpStr=testCase.getExpectedRe();
+                    result = exec(Collections.singletonList(
+                            new Command(testCase.getTargetTelnet(), cmdStr)));
+                    pass = result.get(0).rsp.matches(rexpStr);
+                    resultItems.add(new TestCaseResultItem(
+                            result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
+                    if (pass) {success++;}
+                    total++;
+                }
+            }else{
+                //show ip route 命令
+                cmdStr=testCase.getCmd();
+                result=exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)));
+                rexpStr=concatCommand(testCase.getTargetTelnet(), testCase.getExpectedRe());
+                pass = result.get(0).rsp.matches(rexpStr);
+                resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
+                if (pass) {success++;}
+                total++;
+            }
+        }
+        return new TestCaseResult(((double) success) / total, resultItems);
     }
+
+    private void getPortDetail() {
+        int index=0;
+        while(index<deviceConf.getRouter().length) {
+            for (PortDetail portDetail : deviceConf.getRouter()[index].getPort()) {
+                //打开的s口
+                if (portDetail.isUp() && portDetail.getName().startsWith("s")) {
+                    sIpAddr[index] = portDetail.getIp();
+                    sMask[index] = portDetail.getMask();
+                    sName[index] = portDetail.getName();
+                }
+                index++;
+            }
+        }
+    }
+
+    public String concatCommand(String deviceName,String originRe){return "";}
 }

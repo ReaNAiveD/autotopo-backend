@@ -3,10 +3,12 @@ package cn.svecri.autotopo.service.impl;
 import cn.svecri.autotopo.exception.NoTopoDeployedException;
 import cn.svecri.autotopo.exception.NotFoundException;
 import cn.svecri.autotopo.exception.TopoRunningException;
+import cn.svecri.autotopo.model.TopoTestCase;
 import cn.svecri.autotopo.service.ControlPlaneService;
 import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
+import cn.svecri.autotopo.vo.TestCaseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -55,11 +57,9 @@ public class ControlPlaneServiceImpl implements ControlPlaneService {
     }
 
     @Override
-    public CommandWithResult runTestCase(Command testCase) {
+    public TestCaseResult runTestCase(List<TopoTestCase> list) {
         if (current != null) {
-            var testCases = new ArrayList<Command>();
-            testCases.add(testCase);
-            return current.exec(testCases).get(0);
+            return current.runTestCase(list);
         } else {
             throw new NoTopoDeployedException("No Topo Deployed");
         }
