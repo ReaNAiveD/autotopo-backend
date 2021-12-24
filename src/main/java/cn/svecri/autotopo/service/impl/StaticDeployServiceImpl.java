@@ -34,22 +34,28 @@ public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
         String rexpStr="";
         switch (deviceName) {
             case "routerA":
-                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sIpAddr[0],sMask[0]))
-                        .replace("#2",sMask[0]+"").replace("#3",sName[0].substring(1))
-                        .replace("#4",NetmaskConverter.getNetSegment(sIpAddr[2],sMask[2]))
-                        .replace("#5",sMask[2]+"").replace("#6",sIpAddr[1]);
+                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("a0").getIp(),sPortList.get("a0").getMask()))
+                        .replace("#2",sPortList.get("a0").getMask()+"")
+                        .replace("#3",sPortList.get("a0").getName().substring(1))
+                        .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
+                        .replace("#5",sPortList.get("b1").getMask()+"")
+                        .replace("#6",sPortList.get("b0").getIp());
                 break;
             case "routerB":
-                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sIpAddr[1],sMask[1]))
-                        .replace("#2",sMask[1]+"").replace("#3",sName[1].substring(1))
-                        .replace("#4",NetmaskConverter.getNetSegment(sIpAddr[2],sMask[2]))
-                        .replace("#5",sMask[2]+"").replace("#6",sIpAddr[2].substring(1));
+                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
+                        .replace("#2",sPortList.get("b0").getMask()+"")
+                        .replace("#3",sPortList.get("b0").getName().substring(1))
+                        .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
+                        .replace("#5",sPortList.get("b1").getMask()+"")
+                        .replace("#6",sPortList.get("b1").getIp().substring(1));
                 break;
             case "routerC":
-                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sIpAddr[1],sMask[1]))
-                        .replace("#2",sMask[1]+"").replace("#3",sIpAddr[2])
-                        .replace("#4",NetmaskConverter.getNetSegment(sIpAddr[3],sMask[3]))
-                        .replace("#5",sMask[3]+"").replace("#6",sName[3].substring(1));
+                rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
+                        .replace("#2",sPortList.get("b0").getMask()+"")
+                        .replace("#3",sPortList.get("b1").getIp())
+                        .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("c0").getIp(),sPortList.get("c0").getMask()))
+                        .replace("#5",sPortList.get("c0").getMask()+"")
+                        .replace("#6",sPortList.get("c0").getName());
                 break;
             default:
                 log.error("invalid target telnet");

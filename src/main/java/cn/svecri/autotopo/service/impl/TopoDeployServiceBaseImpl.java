@@ -13,10 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -29,9 +28,8 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     DeviceConf deviceConf;
 
     //分别是 A s0/0/0 B s0/0/0 s0/0/1 C s0/0/0 先写死了后面要改再说吧
-    String[] sIpAddr=new String[4];
-    int[] sMask=new int[4];
-    String[] sName=new String[4];
+    //key是 a0 b0 b1 c0
+    Map<String,PortDetail> sPortList=new HashMap<>();
 
     @Override
     public List<TelnetCommand> resolveConfiguration(String configuration) {
@@ -108,7 +106,7 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         for(TopoTestCase testCase:testCaseList) {
             //打开的s口应该可以互相ping通 下面添加的是ping命令
             if(testCase.getCmd().startsWith("ping ")) {
-                for(String ip:sIpAddr) {
+                for(String ip:sPortList.values().stream().map(PortDetail::getIp).collect(Collectors.toList())) {
                     cmdStr=testCase.getCmd().replace("#1",ip);
                     rexpStr=testCase.getExpectedRe();
                     result = exec(Collections.singletonList(
@@ -139,12 +137,18 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
             for (PortDetail portDetail : deviceConf.getRouter()[index].getPort()) {
                 //打开的s口
                 if (portDetail.isUp() && portDetail.getName().startsWith("s")) {
-                    sIpAddr[index] = portDetail.getIp();
-                    sMask[index] = portDetail.getMask();
-                    sName[index] = portDetail.getName();
+                    String deviceName=deviceConf.getRouter()[index].getName();
+                    String portName=portDetail.getName();
+                    sPortList.put(
+                            deviceName.substring(deviceName.length()-1)+portName.substring(portName.length()-1),
+                            portDetail
+                    );
                 }
                 index++;
             }
+        }
+        if(sPortList.size()!=4){
+            log.error("not enough open port!");
         }
     }
 

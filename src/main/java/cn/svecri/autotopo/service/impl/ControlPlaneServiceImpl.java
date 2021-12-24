@@ -9,14 +9,18 @@ import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
 import cn.svecri.autotopo.vo.TestCaseResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ControlPlaneServiceImpl implements ControlPlaneService {
 
     TopoDeployService current;
@@ -69,4 +73,14 @@ public class ControlPlaneServiceImpl implements ControlPlaneService {
     public TopoDeployService current() {
         return current;
     }
+
+    /**
+     * curl -X POST http://localhost:8080/actuator/shutdown
+     * 用上面的命令关闭项目的话会调用这个方法
+     */
+    @PreDestroy
+    public void cleanCurrentConf(){
+        log.info("clean before destroy!!!!!!!!!");
+    }
+
 }
