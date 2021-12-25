@@ -55,6 +55,9 @@ public class ConfigurationApplyer {
                 }
             }
             commandList.addAll(Arrays.asList(deviceConfItem.getCommand()));
+            commandList.add("exit");
+            commandList.add("exit");
+            //退出conf 回到普通模式
         }
         return commandList;
     }
