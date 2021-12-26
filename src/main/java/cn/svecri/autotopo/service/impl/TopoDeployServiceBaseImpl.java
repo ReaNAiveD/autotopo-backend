@@ -45,12 +45,14 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
             List<String> commandList = configurationApplyer.constructCommandList(item);
             telnetCommandList.add(new TelnetCommand(client,commandList));
         }
+        System.out.println("added:"+clientList.size());
         return telnetCommandList;
     }
 
     @Override
     public List<CommandWithResult> exec(List<Command> commands) {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
+        System.out.println("now:"+clientList.size());
         for(Command com:commands) {
             for (TelnetClient client : clientList) {
                 if (client.getDeviceName().equals(com.device)){

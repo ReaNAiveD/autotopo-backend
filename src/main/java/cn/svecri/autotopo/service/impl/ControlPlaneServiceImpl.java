@@ -61,6 +61,15 @@ public class ControlPlaneServiceImpl implements ControlPlaneService {
     }
 
     @Override
+    public CommandWithResult executeSingle(List<Command> singletonList) {
+        if (current != null) {
+           return current.exec(singletonList).get(0);
+        }else {
+            throw new NoTopoDeployedException("No Topo Deployed");
+        }
+    }
+
+    @Override
     public TestCaseResult runTestCase(List<TopoTestCase> list) {
         if (current != null) {
             return current.runTestCase(list);

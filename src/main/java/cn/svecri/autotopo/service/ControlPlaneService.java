@@ -1,6 +1,7 @@
 package cn.svecri.autotopo.service;
 
 import cn.svecri.autotopo.model.TopoTestCase;
+import cn.svecri.autotopo.vo.Command;
 import cn.svecri.autotopo.vo.CommandWithResult;
 import cn.svecri.autotopo.vo.TestCaseResult;
 
@@ -14,4 +15,5 @@ public interface ControlPlaneService {
 
     TopoDeployService current();
 
+    CommandWithResult executeSingle(List<Command> singletonList);
 }

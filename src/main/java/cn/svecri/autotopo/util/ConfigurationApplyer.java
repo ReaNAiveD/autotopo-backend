@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class ConfigurationApplyer {
     public TelnetClient connectTelnet(DeviceConfItem deviceConfItem){
-        TelnetClient client=new TelnetClient("VT220","#");
+        TelnetClient client=new TelnetClient("VT220","#", deviceConfItem.getName());
         PortDetail portDetail=null;
         for(PortDetail detail: deviceConfItem.getPort()){
             if("f0/0".equals(detail.getName())){
