@@ -34,7 +34,7 @@ public class TopoConfigController {
 
     @PostMapping("/apply")
     public ResponseVo<TopoConfigApplyResult> applyConfig(@RequestParam int configId) {
-        return ResponseVo.ok(topoConfigService.deployConfig(configId));
+        return ResponseVo.ok(topoConfigService.deployConfig(configId, true));
     }
 
     @GetMapping("")
@@ -44,7 +44,7 @@ public class TopoConfigController {
 
     @PostMapping("/check")
     public ResponseVo<TestCaseResult> checkConfig(@RequestParam int topo) {
-        return ResponseVo.ok(topoConfigService.testConfig(topo));
+        return ResponseVo.ok(topoConfigService.testConfig(topo, false));
     }
 
     @GetMapping("/all")

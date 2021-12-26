@@ -14,13 +14,5 @@ import java.util.List;
 @Qualifier("ospfDeployService")
 public class OspfDeployServiceImpl extends TopoDeployServiceBaseImpl{
     @Override
-    public void clean() {
-        isDeploying.set(true);
-        log.info("in ospf clean");
-        isDeploying.set(false);
-        clientList.clear();
-    }
-
-    @Override
-    public TestCaseResult runTestCase(List<TopoTestCase> testCaseList){return null;}
+    public TestCaseResult runTestCase(List<TopoTestCase> testCaseList, boolean apply){return null;}
 }

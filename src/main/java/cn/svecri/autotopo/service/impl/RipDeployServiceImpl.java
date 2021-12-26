@@ -10,13 +10,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Qualifier("ripDeployService")
 public class RipDeployServiceImpl extends TopoDeployServiceBaseImpl{
-    @Override
-    public void clean() {
-        isDeploying.set(true);
-        log.info("in rip clean");
-        isDeploying.set(false);
-        clientList.clear();
-    }
 
     @Override
     public String concatCommand(String deviceName,String originRe){

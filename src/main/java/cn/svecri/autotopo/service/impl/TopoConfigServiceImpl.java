@@ -109,15 +109,15 @@ public class TopoConfigServiceImpl implements TopoConfigService {
     }
 
     @Override
-    public TopoConfigApplyResult deployConfig(int configId) {
+    public TopoConfigApplyResult deployConfig(int configId, boolean apply) {
         TopoConf topoConf = topoConfRepository.getFirstByConfId(configId);
-        return new TopoConfigApplyResult(controlPlaneService.deployTopo(topoConf.getTopoInfo().getTopoId(), topoConf.getContent()));
+        return new TopoConfigApplyResult(controlPlaneService.deployTopo(topoConf.getTopoInfo().getTopoId(), topoConf.getContent(),apply));
     }
 
     @Override
-    public TestCaseResult testConfig(int topoId) {
+    public TestCaseResult testConfig(int topoId, boolean apply) {
         List<TopoTestCase> topoTestCaseList=topoTestCaseRepository.getAllByTopoInfo(topoInfoRepository.getById(topoId));
-        return controlPlaneService.runTestCase(topoTestCaseList);
+        return controlPlaneService.runTestCase(topoTestCaseList, apply);
     }
 
 }

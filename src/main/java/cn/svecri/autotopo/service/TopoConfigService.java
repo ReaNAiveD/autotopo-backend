@@ -18,8 +18,8 @@ public interface TopoConfigService {
 
     void deleteByConfigId(int configId);
 
-    TopoConfigApplyResult deployConfig(int configId);
+    TopoConfigApplyResult deployConfig(int configId, boolean apply);
 
-    TestCaseResult testConfig(int topoId);
+    TestCaseResult testConfig(int topoId, boolean apply);
 
 }

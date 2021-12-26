@@ -21,14 +21,6 @@ import java.util.List;
 @Qualifier("staticDeployService")
 public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
     @Override
-    public void clean() {
-        isDeploying.set(true);
-        log.info("in static clean");
-        isDeploying.set(false);
-        clientList.clear();
-    }
-
-    @Override
     public String concatCommand(String deviceName,String originRe){
         log.info("in static concat Command");
         String rexpStr="";

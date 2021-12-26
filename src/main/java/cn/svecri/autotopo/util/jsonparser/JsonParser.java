@@ -1,17 +1,12 @@
 package cn.svecri.autotopo.util.jsonparser;
 
-import cn.svecri.autotopo.util.ConfigurationApplyer;
-import cn.svecri.autotopo.util.TelnetClient;
 import cn.svecri.autotopo.util.jsonparser.vo.DeviceConf;
-import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
-import cn.svecri.autotopo.vo.CommandWithResult;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 /**
  * @author Lmt

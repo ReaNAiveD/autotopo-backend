@@ -49,21 +49,30 @@ public class ControlPlaneServiceImpl implements ControlPlaneService {
     }
 
     @Override
-    public List<CommandWithResult> deployTopo(int topoId, String conf) {
+    public List<CommandWithResult> deployTopo(int topoId, String conf, boolean apply) {
         if (current != null) {
             if (current.running()) {
                 throw new TopoRunningException("Topo is running. Cannot clean Now...");
             }
-            current.clean();
+            current.clean(false);
         }
         current = getByTopoId(topoId);
-        return current.exec(conf);
+        return current.exec(conf, apply);
     }
 
     @Override
-    public TestCaseResult runTestCase(List<TopoTestCase> list) {
+    public CommandWithResult executeSingle(List<Command> singletonList, boolean apply) {
         if (current != null) {
-            return current.runTestCase(list);
+           return current.exec(singletonList, apply).get(0);
+        }else {
+            throw new NoTopoDeployedException("No Topo Deployed");
+        }
+    }
+
+    @Override
+    public TestCaseResult runTestCase(List<TopoTestCase> list, boolean apply) {
+        if (current != null) {
+            return current.runTestCase(list, apply);
         } else {
             throw new NoTopoDeployedException("No Topo Deployed");
         }

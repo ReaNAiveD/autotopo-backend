@@ -1,6 +1,8 @@
 package cn.svecri.autotopo.service.impl;
 
+import cn.svecri.autotopo.model.TopoCommand;
 import cn.svecri.autotopo.model.TopoTestCase;
+import cn.svecri.autotopo.repository.TopoCommandRepository;
 import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.util.ConfigurationApplyer;
 import cn.svecri.autotopo.util.TelnetClient;
@@ -10,6 +12,7 @@ import cn.svecri.autotopo.util.jsonparser.vo.DeviceConfItem;
 import cn.svecri.autotopo.util.jsonparser.vo.PortDetail;
 import cn.svecri.autotopo.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,13 @@ import java.util.stream.Collectors;
 @Service
 @Primary
 public class TopoDeployServiceBaseImpl implements TopoDeployService {
+    private TopoCommandRepository topoCommandRepository;
+
+    @Autowired
+    public void setTopoCommandRepository(TopoCommandRepository topoCommandRepository) {
+        this.topoCommandRepository = topoCommandRepository;
+    }
+
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
     final List<TelnetClient> clientList=new ArrayList<>();
     final AtomicBoolean isDeploying=new AtomicBoolean(false);
@@ -49,7 +59,7 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     }
 
     @Override
-    public List<CommandWithResult> exec(List<Command> commands) {
+    public List<CommandWithResult> exec(List<Command> commands, boolean apply) {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
         for(Command com:commands) {
             for (TelnetClient client : clientList) {
@@ -61,27 +71,57 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
                 }
             }
         }
-        return execute(telnetCommandList);
+        return execute(telnetCommandList, apply);
     }
 
 
-    private List<CommandWithResult> execute(List<TelnetCommand> telnetCommandList) {
+    private List<CommandWithResult> execute(List<TelnetCommand> telnetCommandList, boolean apply) {
         List<CommandWithResult> res=new ArrayList<>();
         isDeploying.set(true);
         for(TelnetCommand com:telnetCommandList) {
-            res.addAll(configurationApplyer.sendBatchCommand(com.getClient(), com.getCmd()));
+            res.addAll(configurationApplyer.sendBatchCommand(com.getClient(), com.getCmd(), topoCommandRepository, apply));
         }
         isDeploying.set(false);
         return res;
     }
 
     @Override
-    public List<CommandWithResult> exec(String configuration) {
-        return execute(resolveConfiguration(configuration));
+    public List<CommandWithResult> exec(String configuration, boolean apply) {
+        return execute(resolveConfiguration(configuration), apply);
     }
 
     @Override
-    public void clean() {log.info("in base clean");}
+    public void clean(boolean apply) {
+        log.info("in base clean");
+        isDeploying.set(true);
+        //添加client
+        List<TelnetCommand> telnetCommandList = new ArrayList<>();
+        for (TelnetClient client : clientList) {
+            //数据库中获取的
+            List<TopoCommand> topoCmdList = topoCommandRepository.getAllByTargetTelnet(client.getDeviceName());
+            List<String> commandList = new ArrayList<>();
+            for(TopoCommand item : topoCmdList) {
+                String initCmd = item.getCmd();
+                String targetCmd = "";
+                if(initCmd.contains("no") && initCmd.contains("shut")){
+                    targetCmd = "shutdown";
+                }
+                else{
+                    if(initCmd.contains("ip") || initCmd.contains("network") || initCmd.contains("area")){
+                        targetCmd = "no " + initCmd;
+                    }
+                    else if(!initCmd.contains("redistribute")){
+                        targetCmd = initCmd;
+                    }
+                }
+                commandList.add(targetCmd);
+            }
+            telnetCommandList.add(new TelnetCommand(client,commandList));
+        }
+        execute(telnetCommandList, false);
+        topoCommandRepository.deleteAllInBatch();
+        isDeploying.set(false);
+    }
 
     @Override
     public boolean running() {
@@ -92,7 +132,7 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
      * 静态路由和rip这一段可以复用，如果ospf不行就直接override吧
      */
     @Override
-    public TestCaseResult runTestCase(List<TopoTestCase> testCaseList){
+    public TestCaseResult runTestCase(List<TopoTestCase> testCaseList, boolean apply){
         getPortDetail();
 
         List<TestCaseResultItem> resultItems = new ArrayList<>();
@@ -110,7 +150,7 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
                     cmdStr=testCase.getCmd().replace("#1",ip);
                     rexpStr=testCase.getExpectedRe();
                     result = exec(Collections.singletonList(
-                            new Command(testCase.getTargetTelnet(), cmdStr)));
+                            new Command(testCase.getTargetTelnet(), cmdStr)), apply);
                     pass = result.get(0).rsp.matches(rexpStr);
                     resultItems.add(new TestCaseResultItem(
                             result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
@@ -120,7 +160,7 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
             }else{
                 //show ip route 命令
                 cmdStr=testCase.getCmd();
-                result=exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)));
+                result=exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)), apply);
                 rexpStr=concatCommand(testCase.getTargetTelnet(), testCase.getExpectedRe());
                 pass = result.get(0).rsp.matches(rexpStr);
                 resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));

@@ -2,6 +2,7 @@ package cn.svecri.autotopo.service;
 
 import cn.svecri.autotopo.util.TelnetClient;
 import lombok.extern.log4j.Log4j2;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
