@@ -16,14 +16,14 @@ public class RipDeployServiceImpl extends TopoDeployServiceBaseImpl{
         log.info("in rip concat Command");
         String rexpStr="";
         switch (deviceName) {
-            case "routerA":
+            case "RouterA":
                 rexpStr=originRe
                         .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
                         .replace("#2",sPortList.get("b1").getMask()+"")
                         .replace("#3",sPortList.get("b0").getIp())
                         .replace("#4",sPortList.get("a0").getName().substring(1));
                 break;
-            case "routerB":
+            case "RouterB":
                 rexpStr=originRe
                         .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
                         .replace("#2",sPortList.get("b0").getMask()+"")
@@ -32,7 +32,7 @@ public class RipDeployServiceImpl extends TopoDeployServiceBaseImpl{
                         .replace("#5",sPortList.get("b1").getMask()+"")
                         .replace("#6",sPortList.get("b1").getIp().substring(1));
                 break;
-            case "routerC":
+            case "RouterC":
                 rexpStr=originRe
                         .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
                         .replace("#2",sPortList.get("b0").getMask()+"")

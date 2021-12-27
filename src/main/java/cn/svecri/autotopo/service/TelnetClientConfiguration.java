@@ -18,7 +18,7 @@ public class TelnetClientConfiguration {
             @Value("${router-a.pwd}") String password
     ) {
         log.info("Configuring RouterA");
-        var client = new TelnetClient("VT220","#","routerA");
+        var client = new TelnetClient("VT220","#","RouterA");
        /* if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }*/
@@ -31,7 +31,7 @@ public class TelnetClientConfiguration {
             @Value("${router-b.pwd}") String password
     ) {
         log.info("Configuring RouterB");
-        var client = new TelnetClient("VT220","#","routerB");
+        var client = new TelnetClient("VT220","#","RouterB");
         /*if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }*/
@@ -44,7 +44,7 @@ public class TelnetClientConfiguration {
             @Value("${router-c.pwd}") @Nullable String password
     ) {
         log.info("Configuring RouterC");
-        var client = new TelnetClient("VT220","#","routerC");
+        var client = new TelnetClient("VT220","#","RouterC");
        /* if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }*/

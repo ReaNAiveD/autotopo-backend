@@ -58,8 +58,7 @@ public class ConfigurationApplyer {
                 }
             }
             commandList.addAll(Arrays.asList(deviceConfItem.getCommand()));
-            commandList.add("exit");
-            commandList.add("exit");
+            commandList.add("end");
             //退出conf 回到普通模式
         }
         return commandList;
@@ -68,6 +67,7 @@ public class ConfigurationApplyer {
     public List<CommandWithResult> sendBatchCommand(TelnetClient client, List<String> commandList, TopoCommandRepository topoCommandRepository, boolean apply){
         List<CommandWithResult> res=new ArrayList<>();
         for(String command:commandList) {
+            log.info(command);
             String rs = client.sendCommand(command);
             if(apply){
                 if(command.contains("no")){
@@ -89,6 +89,7 @@ public class ConfigurationApplyer {
                     }
                 }
             }
+            log.info(rs);
             try {
                 //转编码
                 rs = new String(rs.getBytes(StandardCharsets.ISO_8859_1), "GBK");

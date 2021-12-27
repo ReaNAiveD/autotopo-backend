@@ -64,8 +64,10 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
         System.out.println("now:"+clientList.size());
         for(Command com:commands) {
+            log.info(com.device+" "+com.cmd);
             for (TelnetClient client : clientList) {
                 if (client.getDeviceName().equals(com.device)){
+                    log.info("here!!!!!!!!");
                     TelnetCommand telnetCommand=new TelnetCommand();
                     telnetCommand.setClient(client);
                     telnetCommand.setCmd(Collections.singletonList(com.cmd));
@@ -176,18 +178,20 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     private void getPortDetail() {
         int index=0;
         while(index<deviceConf.getRouter().length) {
+            log.info(deviceConf.getRouter().length+"");
             for (PortDetail portDetail : deviceConf.getRouter()[index].getPort()) {
+                log.info(portDetail.getName()+" "+portDetail.getIp());
                 //打开的s口
                 if (portDetail.isUp() && portDetail.getName().startsWith("s")) {
                     String deviceName=deviceConf.getRouter()[index].getName();
                     String portName=portDetail.getName();
                     sPortList.put(
-                            deviceName.substring(deviceName.length()-1)+portName.substring(portName.length()-1),
+                            deviceName.substring(deviceName.length()-1).toLowerCase()+portName.substring(portName.length()-1),
                             portDetail
                     );
                 }
-                index++;
             }
+            index++;
         }
         if(sPortList.size()!=4){
             log.error("not enough open port!");

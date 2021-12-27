@@ -1,5 +1,8 @@
 package cn.svecri.autotopo.vo;
 
+import lombok.ToString;
+
+@ToString
 public class CommandWithResult {
 
     public final String device;
