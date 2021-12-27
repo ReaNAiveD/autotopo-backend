@@ -33,7 +33,15 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     }
 
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
-    final List<TelnetClient> clientList=new ArrayList<>();
+
+    @Autowired
+    private TelnetClient routerA;
+    @Autowired
+    private TelnetClient routerB;
+    @Autowired
+    private TelnetClient routerC;
+
+    //final List<TelnetClient> clientList=new ArrayList<>();
     final AtomicBoolean isDeploying=new AtomicBoolean(false);
     DeviceConf deviceConf;
 
@@ -41,6 +49,19 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     //key是 a0 b0 b1 c0
     Map<String,PortDetail> sPortList=new HashMap<>();
 
+    private TelnetClient getClient(String deviceName){
+        switch (deviceName){
+            case "RouterA":
+                return routerA;
+            case "RouterB":
+                return routerB;
+            case "RouterC":
+                return routerC;
+            default:
+                log.error("Invalid device name");
+                return null;
+        }
+    }
     @Override
     public List<TelnetCommand> resolveConfiguration(String configuration) {
         JsonParser jsonParser=new JsonParser();
@@ -50,30 +71,21 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
 
         for(DeviceConfItem item:confItems) {
-            TelnetClient client = configurationApplyer.connectTelnet(item);
-            clientList.add(client);
             List<String> commandList = configurationApplyer.constructCommandList(item);
-            telnetCommandList.add(new TelnetCommand(client,commandList));
+            telnetCommandList.add(new TelnetCommand(getClient(item.getName()),commandList));
         }
-        System.out.println("added:"+clientList.size());
         return telnetCommandList;
     }
 
     @Override
     public List<CommandWithResult> exec(List<Command> commands, boolean apply) {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
-        System.out.println("now:"+clientList.size());
         for(Command com:commands) {
             log.info(com.device+" "+com.cmd);
-            for (TelnetClient client : clientList) {
-                if (client.getDeviceName().equals(com.device)){
-                    log.info("here!!!!!!!!");
-                    TelnetCommand telnetCommand=new TelnetCommand();
-                    telnetCommand.setClient(client);
-                    telnetCommand.setCmd(Collections.singletonList(com.cmd));
-                    telnetCommandList.add(telnetCommand);
-                }
-            }
+            TelnetCommand telnetCommand=new TelnetCommand();
+            telnetCommand.setClient(getClient(com.device));
+            telnetCommand.setCmd(Collections.singletonList(com.cmd));
+            telnetCommandList.add(telnetCommand);
         }
         return execute(telnetCommandList, apply);
     }
@@ -100,7 +112,18 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         isDeploying.set(true);
         //添加client
         List<TelnetCommand> telnetCommandList = new ArrayList<>();
-        for (TelnetClient client : clientList) {
+        for (int i=0;i<3;i++) {
+            TelnetClient client;
+            switch (i){
+                case 0:
+                    client=routerA;break;
+                case 1:
+                    client=routerB;break;
+                case 2:
+                    client=routerC;break;
+                default:
+                    client=null;
+            }
             //数据库中获取的
             List<TopoCommand> topoCmdList = topoCommandRepository.getAllByTargetTelnet(client.getDeviceName());
             List<String> commandList = new ArrayList<>();
