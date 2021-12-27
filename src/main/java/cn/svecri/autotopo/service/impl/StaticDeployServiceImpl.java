@@ -32,7 +32,7 @@ public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
                         .replace("#3",sPortList.get("b0").getName().substring(1))
                         .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
                         .replace("#5",sPortList.get("b1").getMask()+"")
-                        .replace("#6",sPortList.get("b1").getIp().substring(1));
+                        .replace("#6",sPortList.get("b1").getName().substring(1));
                 break;
             case "RouterC":
                 rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
