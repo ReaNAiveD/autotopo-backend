@@ -33,7 +33,15 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     }
 
     ConfigurationApplyer configurationApplyer=new ConfigurationApplyer();
-    final List<TelnetClient> clientList=new ArrayList<>();
+
+    @Autowired
+    private TelnetClient routerA;
+    @Autowired
+    private TelnetClient routerB;
+    @Autowired
+    private TelnetClient routerC;
+
+    //final List<TelnetClient> clientList=new ArrayList<>();
     final AtomicBoolean isDeploying=new AtomicBoolean(false);
     DeviceConf deviceConf;
 
@@ -41,6 +49,19 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     //key是 a0 b0 b1 c0
     Map<String,PortDetail> sPortList=new HashMap<>();
 
+    private TelnetClient getClient(String deviceName){
+        switch (deviceName){
+            case "RouterA":
+                return routerA;
+            case "RouterB":
+                return routerB;
+            case "RouterC":
+                return routerC;
+            default:
+                log.error("Invalid device name");
+                return null;
+        }
+    }
     @Override
     public List<TelnetCommand> resolveConfiguration(String configuration) {
         JsonParser jsonParser=new JsonParser();
@@ -50,28 +71,21 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
 
         for(DeviceConfItem item:confItems) {
-            TelnetClient client = configurationApplyer.connectTelnet(item);
-            clientList.add(client);
             List<String> commandList = configurationApplyer.constructCommandList(item);
-            telnetCommandList.add(new TelnetCommand(client,commandList));
+            telnetCommandList.add(new TelnetCommand(getClient(item.getName()),commandList));
         }
-        System.out.println("added:"+clientList.size());
         return telnetCommandList;
     }
 
     @Override
     public List<CommandWithResult> exec(List<Command> commands, boolean apply) {
         List<TelnetCommand> telnetCommandList=new ArrayList<>();
-        System.out.println("now:"+clientList.size());
         for(Command com:commands) {
-            for (TelnetClient client : clientList) {
-                if (client.getDeviceName().equals(com.device)){
-                    TelnetCommand telnetCommand=new TelnetCommand();
-                    telnetCommand.setClient(client);
-                    telnetCommand.setCmd(Collections.singletonList(com.cmd));
-                    telnetCommandList.add(telnetCommand);
-                }
-            }
+            log.info(com.device+" "+com.cmd);
+            TelnetCommand telnetCommand=new TelnetCommand();
+            telnetCommand.setClient(getClient(com.device));
+            telnetCommand.setCmd(Collections.singletonList(com.cmd));
+            telnetCommandList.add(telnetCommand);
         }
         return execute(telnetCommandList, apply);
     }
@@ -98,7 +112,18 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
         isDeploying.set(true);
         //添加client
         List<TelnetCommand> telnetCommandList = new ArrayList<>();
-        for (TelnetClient client : clientList) {
+        for (int i=0;i<3;i++) {
+            TelnetClient client;
+            switch (i){
+                case 0:
+                    client=routerA;break;
+                case 1:
+                    client=routerB;break;
+                case 2:
+                    client=routerC;break;
+                default:
+                    client=null;
+            }
             //数据库中获取的
             List<TopoCommand> topoCmdList = topoCommandRepository.getAllByTargetTelnet(client.getDeviceName());
             List<String> commandList = new ArrayList<>();
@@ -159,12 +184,38 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
                     if (pass) {success++;}
                     total++;
                 }
-            }else{
+            }else if(testCase.getCmd().equals("show ip route")){
                 //show ip route 命令
                 cmdStr=testCase.getCmd();
                 result=exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)), apply);
                 rexpStr=concatCommand(testCase.getTargetTelnet(), testCase.getExpectedRe());
                 pass = result.get(0).rsp.matches(rexpStr);
+                resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
+                if (pass) {success++;}
+                total++;
+            }else if(testCase.getCmd().equals("show ip ospf database")){
+                //show ip ospf database命令
+                cmdStr=testCase.getCmd();
+                result = exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)), apply);
+                if(testCase.getTargetTelnet().equals("RouterA")){
+                    pass = result.get(0).rsp.contains("Router Link States")
+                            && result.get(0).rsp.contains("Net Link States")
+                            && result.get(0).rsp.contains("Summary Net Link States")
+                            && result.get(0).rsp.contains("Summary ASB Link States")
+                            && result.get(0).rsp.contains("Type-5 AS External Link States");
+                }else if(testCase.getTargetTelnet().equals("RouterB")){
+                    pass = result.get(0).rsp.contains("Router Link States")
+                            && result.get(0).rsp.contains("Net Link States")
+                            && result.get(0).rsp.contains("Summary Net Link States")
+                            && result.get(0).rsp.contains("Summary ASB Link States")
+                            && result.get(0).rsp.contains("Type-7 AS External Link States")
+                            && result.get(0).rsp.contains("Type-5 AS External Link States");
+                }else{
+                    //RouterC
+                    pass = result.get(0).rsp.contains("Router Link States")
+                            && result.get(0).rsp.contains("Summary Net Link States")
+                            && result.get(0).rsp.contains("Type-7 AS External Link States");
+                }
                 resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
                 if (pass) {success++;}
                 total++;
@@ -176,18 +227,20 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     private void getPortDetail() {
         int index=0;
         while(index<deviceConf.getRouter().length) {
+            log.info(deviceConf.getRouter().length+"");
             for (PortDetail portDetail : deviceConf.getRouter()[index].getPort()) {
+                log.info(portDetail.getName()+" "+portDetail.getIp());
                 //打开的s口
                 if (portDetail.isUp() && portDetail.getName().startsWith("s")) {
                     String deviceName=deviceConf.getRouter()[index].getName();
                     String portName=portDetail.getName();
                     sPortList.put(
-                            deviceName.substring(deviceName.length()-1)+portName.substring(portName.length()-1),
+                            deviceName.substring(deviceName.length()-1).toLowerCase()+portName.substring(portName.length()-1),
                             portDetail
                     );
                 }
-                index++;
             }
+            index++;
         }
         if(sPortList.size()!=4){
             log.error("not enough open port!");

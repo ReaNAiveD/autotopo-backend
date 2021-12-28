@@ -1,20 +1,9 @@
 package cn.svecri.autotopo.service.impl;
 
-import cn.svecri.autotopo.model.TopoTestCase;
 import cn.svecri.autotopo.util.NetmaskConverter;
-import cn.svecri.autotopo.util.jsonparser.vo.PortDetail;
-
-import cn.svecri.autotopo.vo.Command;
-import cn.svecri.autotopo.vo.CommandWithResult;
-import cn.svecri.autotopo.vo.TestCaseResult;
-import cn.svecri.autotopo.vo.TestCaseResultItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -25,7 +14,11 @@ public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
         log.info("in static concat Command");
         String rexpStr="";
         switch (deviceName) {
-            case "routerA":
+            case "RouterA":
+                log.info(originRe);
+                log.info(NetmaskConverter.getNetSegment(sPortList.get("a0").getIp(),sPortList.get("a0").getMask()));
+                log.info(String.valueOf(sPortList.keySet()));
+
                 rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("a0").getIp(),sPortList.get("a0").getMask()))
                         .replace("#2",sPortList.get("a0").getMask()+"")
                         .replace("#3",sPortList.get("a0").getName().substring(1))
@@ -33,15 +26,15 @@ public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
                         .replace("#5",sPortList.get("b1").getMask()+"")
                         .replace("#6",sPortList.get("b0").getIp());
                 break;
-            case "routerB":
+            case "RouterB":
                 rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
                         .replace("#2",sPortList.get("b0").getMask()+"")
                         .replace("#3",sPortList.get("b0").getName().substring(1))
                         .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
                         .replace("#5",sPortList.get("b1").getMask()+"")
-                        .replace("#6",sPortList.get("b1").getIp().substring(1));
+                        .replace("#6",sPortList.get("b1").getName().substring(1));
                 break;
-            case "routerC":
+            case "RouterC":
                 rexpStr=originRe.replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
                         .replace("#2",sPortList.get("b0").getMask()+"")
                         .replace("#3",sPortList.get("b1").getIp())
