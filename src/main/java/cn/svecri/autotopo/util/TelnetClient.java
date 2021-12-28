@@ -1,6 +1,7 @@
 package cn.svecri.autotopo.util;
 
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 @ToString
+@Slf4j
 public class TelnetClient {
     //结束标识字符串,Windows中是>,Linux中是#
     private String prompt = "#";
@@ -153,8 +155,10 @@ public class TelnetClient {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+            log.info("originReply:"+rs);
             //去掉换行后的提示符
-            rs=rs.split("\r\n")[0];
+            rs=rs.substring(0,rs.lastIndexOf("\r\n"));
+            log.info("rs:"+rs);
             System.out.println(rs);
         }
     }
