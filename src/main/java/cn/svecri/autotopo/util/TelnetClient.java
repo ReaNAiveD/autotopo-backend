@@ -79,7 +79,8 @@ public class TelnetClient {
                 sb.append(ch);
                 //匹配到结束标识时返回结果
                 if (flag) {
-                    if (ch == lastChar && sb.toString().endsWith(pattern)) {
+                    //newly add && !sb.toString().endsWith("Seq"+pattern) to exclude "Seq#..."
+                    if (ch == lastChar && sb.toString().endsWith(pattern) && !sb.toString().endsWith("Seq"+pattern)) {
                         return sb.toString();
                     }
                 }else{
@@ -152,6 +153,8 @@ public class TelnetClient {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+            //去掉换行后的提示符
+            rs=rs.split("\r\n")[0];
             System.out.println(rs);
         }
     }
