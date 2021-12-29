@@ -19,28 +19,30 @@ public class OspfDeployServiceImpl extends TopoDeployServiceBaseImpl{
         log.info("in ospf concat Command");
         String rexpStr="";
         switch (deviceName) {
-            case "routerA":
+            case "RouterA":
                 rexpStr=originRe
                         .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
                         .replace("#2",sPortList.get("b1").getMask()+"")
                         .replace("#3",sPortList.get("b0").getIp())
                         .replace("#4",sPortList.get("a0").getName().substring(1));
                 break;
-            case "routerB":
+            case "RouterB":
                 rexpStr=originRe
-                        .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
-                        .replace("#2",sPortList.get("b0").getMask()+"")
-                        .replace("#3",sPortList.get("b0").getName().substring(1))
-                        .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("b1").getIp(),sPortList.get("b1").getMask()))
-                        .replace("#5",sPortList.get("b1").getMask()+"")
-                        .replace("#6",sPortList.get("b1").getIp().substring(1));
+                        .replace("#1", loPortList.get("lo0").getIp())
+                        .replace("#2", sPortList.get("a0").getIp())
+                        .replace("#3", sPortList.get("b0").getName().substring(1))
+                        .replace("#4", loPortList.get("lo1").getIp())
+                        .replace("#5", loPortList.get("lo2").getIp());
                 break;
-            case "routerC":
+            case "RouterC":
                 rexpStr=originRe
-                        .replace("#1", NetmaskConverter.getNetSegment(sPortList.get("b0").getIp(),sPortList.get("b0").getMask()))
-                        .replace("#2",sPortList.get("b0").getMask()+"")
-                        .replace("#3",sPortList.get("b1").getIp())
-                        .replace("#4",sPortList.get("c0").getName().substring(1));
+                        .replace("#1", loPortList.get("lo0").getIp())
+                        .replace("#2", sPortList.get("b1").getIp())
+                        .replace("#3", sPortList.get("c0").getName().substring(1))
+                        .replace("#4", NetmaskConverter.getNetSegment(sPortList.get("a0").getIp(),sPortList.get("a0").getMask()))
+                        .replace("#5", NetmaskConverter.getNetSegment(fPortList.get("af1").getIp(),fPortList.get("af1").getMask()))
+                        .replace("#6",sPortList.get("a0").getMask()+"")
+                        .replace("#7",fPortList.get("af1").getMask()+"");
                 break;
             default:
                 log.error("invalid target telnet");

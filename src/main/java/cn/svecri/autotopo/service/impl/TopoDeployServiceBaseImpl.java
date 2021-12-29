@@ -48,6 +48,12 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     //分别是 A s0/0/0 B s0/0/0 s0/0/1 C s0/0/0 先写死了后面要改再说吧
     //key是 a0 b0 b1 c0
     Map<String,PortDetail> sPortList=new HashMap<>();
+    //分别是 A f0/1 B f0/1
+    //key是 af1 bf1
+    Map<String,PortDetail> fPortList=new HashMap<>();
+    //分别是 A Loopback0 Loopback1 Loopback2
+    //key是 lo0 lo1 lo2
+    Map<String,PortDetail> loPortList=new HashMap<>();
 
     private TelnetClient getClient(String deviceName){
         switch (deviceName){
@@ -193,29 +199,12 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
                 resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
                 if (pass) {success++;}
                 total++;
-            }else if(testCase.getCmd().equals("show ip ospf database")){
+            }else{
                 //show ip ospf database命令
                 cmdStr=testCase.getCmd();
-                result = exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)), apply);
-                if(testCase.getTargetTelnet().equals("RouterA")){
-                    pass = result.get(0).rsp.contains("Router Link States")
-                            && result.get(0).rsp.contains("Net Link States")
-                            && result.get(0).rsp.contains("Summary Net Link States")
-                            && result.get(0).rsp.contains("Summary ASB Link States")
-                            && result.get(0).rsp.contains("Type-5 AS External Link States");
-                }else if(testCase.getTargetTelnet().equals("RouterB")){
-                    pass = result.get(0).rsp.contains("Router Link States")
-                            && result.get(0).rsp.contains("Net Link States")
-                            && result.get(0).rsp.contains("Summary Net Link States")
-                            && result.get(0).rsp.contains("Summary ASB Link States")
-                            && result.get(0).rsp.contains("Type-7 AS External Link States")
-                            && result.get(0).rsp.contains("Type-5 AS External Link States");
-                }else{
-                    //RouterC
-                    pass = result.get(0).rsp.contains("Router Link States")
-                            && result.get(0).rsp.contains("Summary Net Link States")
-                            && result.get(0).rsp.contains("Type-7 AS External Link States");
-                }
+                result=exec(Collections.singletonList(new Command(testCase.getTargetTelnet(), cmdStr)), apply);
+                rexpStr=testCase.getExpectedRe();
+                pass = result.get(0).rsp.matches(rexpStr);
                 resultItems.add(new TestCaseResultItem(result.get(0).device, cmdStr, result.get(0).rsp, rexpStr, pass));
                 if (pass) {success++;}
                 total++;
@@ -238,6 +227,20 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
                             deviceName.substring(deviceName.length()-1).toLowerCase()+portName.substring(portName.length()-1),
                             portDetail
                     );
+                }
+                //打开的f口
+                if (portDetail.isUp() && portDetail.getName().startsWith("f") && portDetail.getName().endsWith("1")) {
+                    String deviceName=deviceConf.getRouter()[index].getName();
+                    String portName=portDetail.getName();
+                    fPortList.put(
+                            deviceName.substring(deviceName.length()-1).toLowerCase()+"f"+portName.substring(portName.length()-1),
+                            portDetail
+                    );
+                }
+                //打开的环回口
+                if (portDetail.isUp() && portDetail.getName().startsWith("lo")) {
+                    String portName=portDetail.getName();
+                    loPortList.put(portName, portDetail);
                 }
             }
             index++;
