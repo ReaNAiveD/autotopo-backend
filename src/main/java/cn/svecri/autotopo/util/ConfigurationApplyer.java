@@ -80,7 +80,7 @@ public class ConfigurationApplyer {
                     }
                 }
                 else{
-                    if(!command.contains("show") && !command.contains("ping")){
+                    if(!command.contains("show") && !command.contains("ping") && !command.contains("term len")){
                         TopoCommand topoCommand = new TopoCommand(
                                 command,
                                 client.getDeviceName()

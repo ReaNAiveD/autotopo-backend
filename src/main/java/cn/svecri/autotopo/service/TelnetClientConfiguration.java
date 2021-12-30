@@ -22,6 +22,7 @@ public class TelnetClientConfiguration {
         if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }
+        client.sendCommand("term len 400");
         return client;
     }
 
@@ -35,6 +36,7 @@ public class TelnetClientConfiguration {
         if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }
+        client.sendCommand("term len 400");
         return client;
     }
 
@@ -48,6 +50,7 @@ public class TelnetClientConfiguration {
         if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
         }
+        client.sendCommand("term len 400");
         return client;
     }
 

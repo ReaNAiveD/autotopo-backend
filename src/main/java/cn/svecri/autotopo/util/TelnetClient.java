@@ -83,6 +83,7 @@ public class TelnetClient {
                 if (flag) {
                     //newly add && !sb.toString().endsWith("Seq"+pattern) to exclude "Seq#..."
                     if (ch == lastChar && sb.toString().endsWith(pattern) && !sb.toString().endsWith("Seq"+pattern)) {
+//                    if (ch == lastChar && sb.toString().endsWith(pattern)) {
                         return sb.toString();
                     }
                 }else{
