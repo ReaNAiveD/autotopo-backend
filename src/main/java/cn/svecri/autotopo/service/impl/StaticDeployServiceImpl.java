@@ -40,7 +40,7 @@ public class StaticDeployServiceImpl extends TopoDeployServiceBaseImpl{
                         .replace("#3",sPortList.get("b1").getIp())
                         .replace("#4",NetmaskConverter.getNetSegment(sPortList.get("c0").getIp(),sPortList.get("c0").getMask()))
                         .replace("#5",sPortList.get("c0").getMask()+"")
-                        .replace("#6",sPortList.get("c0").getName());
+                        .replace("#6",sPortList.get("c0").getName().substring(1));
                 break;
             default:
                 log.error("invalid target telnet");
