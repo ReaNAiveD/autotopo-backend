@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -251,4 +252,9 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
     }
 
     public String concatCommand(String deviceName,String originRe){return "";}
+
+    @PostConstruct
+    private void initclean(){
+        topoCommandRepository.deleteAllInBatch();
+    }
 }
