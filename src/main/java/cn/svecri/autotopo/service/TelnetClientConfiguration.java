@@ -19,9 +19,9 @@ public class TelnetClientConfiguration {
     ) {
         log.info("Configuring RouterA");
         var client = new TelnetClient("VT220","#","RouterA");
-       /* if (!client.login(ip, 23, password)) {
+        if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
-        }*/
+        }
         return client;
     }
 
@@ -32,9 +32,9 @@ public class TelnetClientConfiguration {
     ) {
         log.info("Configuring RouterB");
         var client = new TelnetClient("VT220","#","RouterB");
-        /*if (!client.login(ip, 23, password)) {
+        if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
-        }*/
+        }
         return client;
     }
 
@@ -45,9 +45,9 @@ public class TelnetClientConfiguration {
     ) {
         log.info("Configuring RouterC");
         var client = new TelnetClient("VT220","#","RouterC");
-       /* if (!client.login(ip, 23, password)) {
+        if (!client.login(ip, 23, password)) {
             log.error("Login to " + ip + ":" + 23 + " Error!");
-        }*/
+        }
         return client;
     }
 
