@@ -253,8 +253,8 @@ public class TopoDeployServiceBaseImpl implements TopoDeployService {
 
     public String concatCommand(String deviceName,String originRe){return "";}
 
-    @PostConstruct
-    private void initclean(){
-        topoCommandRepository.deleteAllInBatch();
-    }
+//    @PostConstruct
+//    private void initclean(){
+//        topoCommandRepository.deleteAllInBatch();
+//    }
 }
