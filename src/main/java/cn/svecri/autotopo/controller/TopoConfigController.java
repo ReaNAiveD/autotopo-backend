@@ -5,6 +5,7 @@ import cn.svecri.autotopo.exception.NonDeletableException;
 import cn.svecri.autotopo.exception.NotFoundException;
 import cn.svecri.autotopo.exception.TopoRunningException;
 import cn.svecri.autotopo.service.TopoConfigService;
+import cn.svecri.autotopo.service.TopoDeployService;
 import cn.svecri.autotopo.vo.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,9 @@ public class TopoConfigController {
 
     @Resource
     private TopoConfigService topoConfigService;
+
+    @Resource
+    private TopoDeployService topoDeployService;
 
     @GetMapping("/default")
     public ResponseVo<TopoConfigVo> getDefaultConfig(@RequestParam int topo) {
@@ -55,6 +59,12 @@ public class TopoConfigController {
     @DeleteMapping("")
     public ResponseVo<Object> deleteConfig(@RequestParam int configId) {
         topoConfigService.deleteByConfigId(configId);
+        return ResponseVo.ok();
+    }
+
+    @GetMapping("/clean")
+    public ResponseVo<Object> clean(){
+        topoDeployService.clean(false);
         return ResponseVo.ok();
     }
 
